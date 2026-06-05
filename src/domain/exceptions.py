@@ -29,6 +29,15 @@ class DuplicatePlayerEmailException(DomainException):
         )
 
 
+class DuplicatePlayerNameException(DomainException):
+    """Raised when a player with the same name already exists in the same game."""
+
+    def __init__(self, name: str):
+        super().__init__(
+            f"A player with name '{name}' is already registered in this game."
+        )
+
+
 class InvalidAdminCodeException(DomainException):
     """Raised when the provided admin code is incorrect."""
 
