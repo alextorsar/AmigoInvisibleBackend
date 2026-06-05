@@ -1,0 +1,29 @@
+[tool.ruff]
+# Target Python version
+target-version = "py311"
+
+# Line length matching the PEP 8 / Black formatter standard
+line-length = 88
+
+# Source directories
+src = ["src"]
+
+[tool.ruff.lint]
+# Active rule sets:
+# E/W: pycodestyle (style guide violations)
+# F: Pyflakes (syntax/logical errors)
+# I: isort (automatic import sorting)
+# B: flake8-bugbear (common design issues/bugs)
+# UP: pyupgrade (upgrading to modern python syntax)
+# C4: flake8-comprehensions (simplifying list/dict comprehensions)
+select = ["E", "W", "F", "I", "B", "UP", "C4"]
+
+# Rules to ignore (none for now, keeping it strict and clean)
+ignore = []
+
+[tool.ruff.format]
+# Keep formatting style consistent
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"

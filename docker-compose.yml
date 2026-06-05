@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: secret_santa_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespassword
+      POSTGRES_DB: secret_santa
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d secret_santa"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: secret_santa_mailpit
+    ports:
+      - "1025:1025" # SMTP port
+      - "8025:8025" # Web UI dashboard
+    environment:
+      MP_MAX_MESSAGES: 500
+
+  web:
+    build: .
+    container_name: secret_santa_web
+    command: uvicorn src.infrastructure.web.main:app --host 0.0.0.0 --port 8000 --reload
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgrespassword@db:5432/secret_santa
+      - SMTP_HOST=mailpit
+      - SMTP_HOST_PORT=1025
+      - SMTP_USERNAME=
+      - SMTP_PASSWORD=
+      - SMTP_USE_TLS=false
+      - SMTP_FROM_EMAIL=noreply@secretsanta.local
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
